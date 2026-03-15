@@ -3,3 +3,7 @@ __pycache__/
 logs/
 organized/
 watched_folder/
+model.pkl
+vectorizer.pkl
+.DS_Store
+Thumbs.db

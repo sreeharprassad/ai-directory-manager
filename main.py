@@ -24,8 +24,8 @@ def monitor_directory():
             # process only new files
             if full_path not in processed_files:
 
-                # classify file
-                category = classify_file(file)
+                # classify file (NOW USING FULL PATH)
+                category = classify_file(full_path)
 
                 # destination folder
                 destination = os.path.join(OUTPUT_DIRECTORY, category)
