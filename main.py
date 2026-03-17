@@ -1,42 +1,64 @@
 import os
 import time
 
-from config import WATCHED_DIRECTORY, OUTPUT_DIRECTORY
+import config   
 from classifier import classify_file
 from file_operations import move_file
+from file_operations import log_action
 
 processed_files = set()
+
+# control flag for GUI
+running = False
 
 
 def monitor_directory():
 
+    log_action("----- New Session Started -----")
+    
+    global running
+
     print("Monitoring folder...")
 
-    while True:
+    running = True
 
-        # list files in watched folder
-        files = os.listdir(WATCHED_DIRECTORY)
+    processed_files.clear()
 
-        for file in files:
+    while running:
 
-            full_path = os.path.join(WATCHED_DIRECTORY, file)
+        try:
+            # use dynamic path
+            files = os.listdir(config.WATCHED_DIRECTORY)
 
-            # process only new files
-            if full_path not in processed_files:
+            for file in files:
 
-                # classify file (NOW USING FULL PATH)
-                category = classify_file(full_path)
+                full_path = os.path.join(config.WATCHED_DIRECTORY, file)
 
-                # destination folder
-                destination = os.path.join(OUTPUT_DIRECTORY, category)
+                # process only new files
+                if full_path not in processed_files:
 
-                # move file
-                move_file(full_path, destination)
+                    # classify file
+                    category = classify_file(full_path)
 
-                processed_files.add(full_path)
+                    # destination folder
+                    destination = os.path.join(config.OUTPUT_DIRECTORY, category)
 
-        # wait 5 seconds
-        time.sleep(5)
+                    # move file
+                    move_file(full_path, destination)
+
+                    processed_files.add(full_path)
+
+        except Exception as e:
+            print(f"Error: {e}")
+
+        time.sleep(3)
+
+
+def stop_monitor():
+    log_action("----- Session Ended -----")
+    global running
+    running = False
+    print("Monitoring stopped.")
 
 
 if __name__ == "__main__":

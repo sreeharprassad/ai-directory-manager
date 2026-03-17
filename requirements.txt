@@ -3,3 +3,4 @@ pandas
 joblib
 python-docx
 pdfminer.six
+customtkinter
